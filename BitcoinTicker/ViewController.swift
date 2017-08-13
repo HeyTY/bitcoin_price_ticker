@@ -13,8 +13,10 @@ import SwiftyJSON
 class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
     
     let baseURL = "https://apiv2.bitcoinaverage.com/indices/global/ticker/"
-    let currencyArray = [["BTC","ETH","LTC"],["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]]
-    let currencySymbolArray = ["$", "R$", "$", "¥", "€", "£", "$", "Rp", "₪", "₹", "¥", "$", "kr", "$", "zł", "lei", "₽", "kr", "$", "$", "R"]
+    let coinbaseURL1 = "https://api.coinbase.com/v2/prices/"
+    let coinbaseURL2 = "/spot?"
+    let currencyArray = [["BTC","ETH","LTC"],["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","VND","ZAR"]]
+    let currencySymbolArray = ["$", "R$", "$", "¥", "€", "£", "$", "Rp", "₪", "₹", "¥", "$", "kr", "$", "zł", "lei", "₽", "kr", "$", "$","₫", "R"]
     
     let cryptoComponent = 0
     let currencyComponent = 1
@@ -64,7 +66,7 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
         let crypto = currencyArray[cryptoComponent][currencyPicker.selectedRow(inComponent: cryptoComponent)]
         let currency = currencyArray[currencyComponent][currencyPicker.selectedRow(inComponent: currencyComponent)]
         
-        finalURL = baseURL + crypto + currency
+        finalURL = coinbaseURL1 + crypto + "-" + currency + coinbaseURL2
         currencySelected = currencySymbolArray[row]
         getBtcData(url: finalURL)
         
@@ -104,8 +106,9 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     
     
     func updateBtcData(json : JSON){
-        if let priceResult = json["ask"].double{
+        if let priceResult = json["data"]["amount"].string{
             bitcoinPriceLabel.text = "\(currencySelected)\(priceResult)"
+            print(priceResult)
         
         } else {
             bitcoinPriceLabel.text = "Price Unavailable"
