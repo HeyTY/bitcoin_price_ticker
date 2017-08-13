@@ -12,9 +12,14 @@ import SwiftyJSON
 
 class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
     
-    let baseURL = "https://apiv2.bitcoinaverage.com/indices/global/ticker/BTC"
-    let currencyArray = ["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]
+    let baseURL = "https://apiv2.bitcoinaverage.com/indices/global/ticker/"
+    let currencyArray = [["BTC","ETH","LTC"],["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]]
     let currencySymbolArray = ["$", "R$", "$", "¥", "€", "£", "$", "Rp", "₪", "₹", "¥", "$", "kr", "$", "zł", "lei", "₽", "kr", "$", "$", "R"]
+    
+    let cryptoComponent = 0
+    let currencyComponent = 1
+    
+    
     var finalURL = ""
     var currencySelected = ""
 
@@ -38,32 +43,33 @@ class ViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDele
     
     // How many columns in picker
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
+        return currencyArray.count
     }
     
     
     // How many rows in picker
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return currencyArray.count
+        return currencyArray[component].count
+        
     }
     
 
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return currencyArray[row]
+        return currencyArray[component][row]
     }
     
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int){
 
+        let crypto = currencyArray[cryptoComponent][currencyPicker.selectedRow(inComponent: cryptoComponent)]
+        let currency = currencyArray[currencyComponent][currencyPicker.selectedRow(inComponent: currencyComponent)]
         
-        finalURL = baseURL + currencyArray[row]
+        finalURL = baseURL + crypto + currency
         currencySelected = currencySymbolArray[row]
         getBtcData(url: finalURL)
         
+        print(finalURL)
     }
-    
-    
-    
     
     
 
